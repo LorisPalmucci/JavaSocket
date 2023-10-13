@@ -7,7 +7,9 @@ public class Server {
     private ServerSocket sS;
 
     /**
+     * Avvia una socket, prendendo come parametro iniziale la porta dove verrà associata
      *
+     * @param port
      */
     public Server(int port){
         try {
@@ -16,6 +18,9 @@ public class Server {
         System.out.println("Server in ascolto su: " + sS.getLocalPort());
     }
 
+    /**
+     * Avvia il server
+     */
     public void runServer(){
         while (true)
         {
