@@ -31,7 +31,6 @@ public class Server {
                 BufferedReader buffer = new BufferedReader(new InputStreamReader(inStream));
                 FileWriter f = new FileWriter("C:\\Users\\User\\Desktop\\java_rcv_file.json")){
             System.out.println("Connessione stabilita con: " + sC.getRemoteSocketAddress());
-            //receiveAndWriteToFile(sC);
             String line;
             while ((line = buffer.readLine()) != null) {
                 System.out.println(line);
