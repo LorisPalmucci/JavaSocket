@@ -48,21 +48,11 @@ public class Server {
      * @param socket
      *              la socket da cui viene prelevato il flusso di byte.
      */
-<<<<<<< HEAD
-    public void runServer(){
-        try (
-                Socket sC = sS.accept();
-                InputStream inStream = sC.getInputStream();
-                BufferedReader buffer = new BufferedReader(new InputStreamReader(inStream));
-                FileWriter f = new FileWriter("C:\\Users\\User\\Desktop\\java_rcv_file.json")){
-            System.out.println("Connessione stabilita con: " + sC.getRemoteSocketAddress());
-=======
     private void transferFile(Socket socket){
         try(InputStream inStream = socket.getInputStream();
             BufferedReader buffer = new BufferedReader(new InputStreamReader(inStream));
             FileWriter f = new FileWriter("C:\\Users\\User\\Desktop\\java_rcv_file.json")) {
 
->>>>>>> receiveFile
             String line;
             while ((line = buffer.readLine()) != null) {
                 System.out.println(line);
