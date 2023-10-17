@@ -14,12 +14,17 @@ public class Server {
      * @param port
      */
     public Server(int port){
-        runServer(port);
+        try {
+            sS = new ServerSocket();
+            sS.bind(new InetSocketAddress(port));
+        }catch (IOException e){}
+        System.out.println("Server in ascolto su: " + sS.getLocalPort());
     }
 
     /**
      * Avvia il server
      */
+<<<<<<< HEAD
     public void runServer(int socketPort){
         try {
             System.out.println("Starting socket...");
@@ -49,6 +54,8 @@ public class Server {
      *              la socket da cui viene prelevato il flusso di byte.
      */
 <<<<<<< HEAD
+=======
+>>>>>>> parent of 0247f2c (split code into more method)
     public void runServer(){
         try (
                 Socket sC = sS.accept();
@@ -56,6 +63,7 @@ public class Server {
                 BufferedReader buffer = new BufferedReader(new InputStreamReader(inStream));
                 FileWriter f = new FileWriter("C:\\Users\\User\\Desktop\\java_rcv_file.json")){
             System.out.println("Connessione stabilita con: " + sC.getRemoteSocketAddress());
+<<<<<<< HEAD
 =======
     private void transferFile(Socket socket){
         try(InputStream inStream = socket.getInputStream();
@@ -63,6 +71,9 @@ public class Server {
             FileWriter f = new FileWriter("C:\\Users\\User\\Desktop\\java_rcv_file.json")) {
 
 >>>>>>> receiveFile
+=======
+            //receiveAndWriteToFile(sC);
+>>>>>>> parent of 0247f2c (split code into more method)
             String line;
             while ((line = buffer.readLine()) != null) {
                 System.out.println(line);
