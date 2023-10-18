@@ -27,9 +27,21 @@ public class Server {
             System.out.println("Started...");
             sS.bind(new InetSocketAddress(socketPort));
             System.out.println("Server is listening on port: " + sS.getLocalPort());
-            Socket sC = sS.accept();
-            System.out.println("Connect to: " + sC.getRemoteSocketAddress());
-            transferFile(sC);
+            while(!sS.isClosed()){
+                Socket sC = sS.accept();
+                System.out.println("Connect to: " + sC.getRemoteSocketAddress());
+                String s = " ";
+                do{
+                    InputStream in = sC.getInputStream();
+                    BufferedReader buf = new BufferedReader(new InputStreamReader(in));
+                    s = buf.readLine();
+                    System.out.println(s);
+                }while(!s.equals("quit"));
+                System.out.println("Send close from client...");
+                sC.close();
+                System.out.println("Connection close");
+            }
+            //transferFile(sC);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
