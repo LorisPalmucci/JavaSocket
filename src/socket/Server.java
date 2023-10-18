@@ -24,7 +24,7 @@ public class Server {
     /**
      * Avvia il server
      */
-    
+
     public void runServer(int socketPort){
         try {
             System.out.println("Starting socket...");
