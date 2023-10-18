@@ -30,6 +30,8 @@ public class Server {
             while(!sS.isClosed()){
                 Socket sC = sS.accept();
                 System.out.println("Connect to: " + sC.getRemoteSocketAddress());
+                System.out.println("Type 'quit' to close connection...");
+                System.out.println("Waiting for data...");
                 String s = " ";
                 do{
                     InputStream in = sC.getInputStream();
@@ -37,9 +39,10 @@ public class Server {
                     s = buf.readLine();
                     System.out.println(s);
                 }while(!s.equals("quit"));
-                System.out.println("Send close from client...");
+                System.out.println("Send 'close' from client...");
                 sC.close();
                 System.out.println("Connection close");
+                System.out.println("Server is listening on port: " + sS.getLocalPort());
             }
             //transferFile(sC);
         } catch (IOException e) {
