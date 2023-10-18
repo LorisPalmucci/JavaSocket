@@ -32,9 +32,24 @@ public class Server {
             System.out.println("Started...");
             sS.bind(new InetSocketAddress(socketPort));
             System.out.println("Server is listening on port: " + sS.getLocalPort());
-            Socket sC = sS.accept();
-            System.out.println("Connect to: " + sC.getRemoteSocketAddress());
-            transferFile(sC);
+            while(!sS.isClosed()){
+                Socket sC = sS.accept();
+                System.out.println("Connect to: " + sC.getRemoteSocketAddress());
+                System.out.println("Type 'quit' to close connection...");
+                System.out.println("Waiting for data...");
+                String s = " ";
+                do{
+                    InputStream in = sC.getInputStream();
+                    BufferedReader buf = new BufferedReader(new InputStreamReader(in));
+                    s = buf.readLine();
+                    System.out.println(s);
+                }while(!s.equals("quit"));
+                System.out.println("Send 'close' from client...");
+                sC.close();
+                System.out.println("Connection close");
+                System.out.println("Server is listening on port: " + sS.getLocalPort());
+            }
+            //transferFile(sC);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -53,27 +68,11 @@ public class Server {
      * @param socket
      *              la socket da cui viene prelevato il flusso di byte.
      */
-<<<<<<< HEAD
-=======
->>>>>>> parent of 0247f2c (split code into more method)
-    public void runServer(){
-        try (
-                Socket sC = sS.accept();
-                InputStream inStream = sC.getInputStream();
-                BufferedReader buffer = new BufferedReader(new InputStreamReader(inStream));
-                FileWriter f = new FileWriter("C:\\Users\\User\\Desktop\\java_rcv_file.json")){
-            System.out.println("Connessione stabilita con: " + sC.getRemoteSocketAddress());
-<<<<<<< HEAD
-=======
     private void transferFile(Socket socket){
         try(InputStream inStream = socket.getInputStream();
             BufferedReader buffer = new BufferedReader(new InputStreamReader(inStream));
             FileWriter f = new FileWriter("C:\\Users\\User\\Desktop\\java_rcv_file.json")) {
 
->>>>>>> receiveFile
-=======
-            //receiveAndWriteToFile(sC);
->>>>>>> parent of 0247f2c (split code into more method)
             String line;
             while ((line = buffer.readLine()) != null) {
                 System.out.println(line);
