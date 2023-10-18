@@ -14,11 +14,7 @@ public class Server {
      * @param port
      */
     public Server(int port){
-        try {
-            sS = new ServerSocket();
-            sS.bind(new InetSocketAddress(port));
-        }catch (IOException e){}
-        System.out.println("Server in ascolto su: " + sS.getLocalPort());
+        runServer(port);
     }
 
     /**
