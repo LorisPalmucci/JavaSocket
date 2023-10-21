@@ -28,17 +28,18 @@ public class Server {
             sS = new ServerSocket();
             System.out.println("Started...");
             sS.bind(new InetSocketAddress(PORT));
-            System.out.println("Server is listening on port: " + sS.getLocalPort());
             while(!sS.isClosed()){
+                System.out.println("Server is listening on port: " + sS.getLocalPort());
                 this.sC = sS.accept();
                 System.out.println("Connect to: " + sC.getRemoteSocketAddress() +
                         "\nType 'quit' to close connection..." +
                         "\nWaiting for data...");
                 commandLine();
-                System.out.println("Server is listening on port: " + sS.getLocalPort());
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } finally {
+            System.out.println("Server is closed!");
         }
     }
 
@@ -52,17 +53,30 @@ public class Server {
      *          caratteri che verranno bufferizzati.
      */
     private void commandLine(){
-        String s;
+        String command;
         try {
-            do{
-                InputStream in = sC.getInputStream();
-                BufferedReader buf = new BufferedReader(new InputStreamReader(in));
-                s = buf.readLine();
-                System.out.println(s);
-            }while(!s.equals("quit"));
-            System.out.println("Send 'close' from client...");
+            InputStream in = sC.getInputStream();
+            BufferedReader buf = new BufferedReader(new InputStreamReader(in));
+            boolean flagClose = true;
+            while (flagClose){
+                command = buf.readLine();
+                switch (command){
+                    case "quit":
+                        System.out.println(command + ": Send 'close' from client...");
+                        flagClose = false;
+                        break;
+                    case "close":
+                        System.out.println(command + "Server start shutdown...");
+                        sS.close();
+                        flagClose = false;
+                        System.out.println("Server stop listening for new connection...");
+                        break;
+                    default:
+                        System.out.println(command + ": Comm not found");
+                }
+            }
             sC.close();
-            System.out.println("Connection close...");
+            System.out.println("Connection with client is close...");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -101,4 +115,12 @@ public class Server {
      * @return
      */
     public boolean checkIsClosed(){return sS.isClosed();}
+
+    public void closeSocket(){
+        try {
+            sS.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
