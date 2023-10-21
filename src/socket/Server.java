@@ -8,43 +8,35 @@ public class Server {
 
     private ServerSocket sS;
 
+    private Socket sC;
+
+    private static int PORT = 50007;
+
     /**
      * Avvia una socket, prendendo come parametro iniziale la porta dove verrà associata
-     *
-     * @param port
      */
-    public Server(int port){
-        runServer(port);
+    public Server(){
+        runServer();
     }
 
     /**
-     * Avvia il server
+     *
      */
-    public void runServer(int socketPort){
+    public void runServer(){
         try {
             System.out.println("Starting socket...");
             sS = new ServerSocket();
             System.out.println("Started...");
-            sS.bind(new InetSocketAddress(socketPort));
+            sS.bind(new InetSocketAddress(PORT));
             System.out.println("Server is listening on port: " + sS.getLocalPort());
             while(!sS.isClosed()){
-                Socket sC = sS.accept();
-                System.out.println("Connect to: " + sC.getRemoteSocketAddress());
-                System.out.println("Type 'quit' to close connection...");
-                System.out.println("Waiting for data...");
-                String s = " ";
-                do{
-                    InputStream in = sC.getInputStream();
-                    BufferedReader buf = new BufferedReader(new InputStreamReader(in));
-                    s = buf.readLine();
-                    System.out.println(s);
-                }while(!s.equals("quit"));
-                System.out.println("Send 'close' from client...");
-                sC.close();
-                System.out.println("Connection close");
+                this.sC = sS.accept();
+                System.out.println("Connect to: " + sC.getRemoteSocketAddress() +
+                        "\nType 'quit' to close connection..." +
+                        "\nWaiting for data...");
+                commandLine();
                 System.out.println("Server is listening on port: " + sS.getLocalPort());
             }
-            //transferFile(sC);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -53,28 +45,60 @@ public class Server {
     /**
      * Avvia la trascrizione del file sulla specifica socket passata.
      *
-     * inStream: la variabile prende in ingresso il flusso di byte dalla socket e li immagazzina.
-     * Buffer: crea una nuovo oggetto che legge dallo stream di caratteri, gestito a sua volta tramite una istanza
+     * in: la variabile prende in ingresso il flusso di byte dalla socket e li immagazzina.
+     * buf: crea una nuovo oggetto che legge dallo stream di caratteri, gestito a sua volta tramite una istanza
      *          InputStreamReader.
-     * InputStreamReader: Quest'ultima funge da ponte tra il flusso di byte della socket e lo stram di
+     * InputStreamReader: Quest'ultima funge da ponte tra il flusso di byte della socket e lo stream di
      *          caratteri che verranno bufferizzati.
-     * FileWriter: scrive i caratteri bufferizzati in un file a cui viene passata la path assoluta di salvataggio.
-     *
-     * @param socket
-     *              la socket da cui viene prelevato il flusso di byte.
      */
-    private void transferFile(Socket socket){
-        try(InputStream inStream = socket.getInputStream();
-            BufferedReader buffer = new BufferedReader(new InputStreamReader(inStream));
-            FileWriter f = new FileWriter("C:\\Users\\User\\Desktop\\java_rcv_file.json")) {
-
-            String line;
-            while ((line = buffer.readLine()) != null) {
-                System.out.println(line);
-                f.write(line + "\n");
-            }
+    private void commandLine(){
+        String s;
+        try {
+            do{
+                InputStream in = sC.getInputStream();
+                BufferedReader buf = new BufferedReader(new InputStreamReader(in));
+                s = buf.readLine();
+                System.out.println(s);
+            }while(!s.equals("quit"));
+            System.out.println("Send 'close' from client...");
+            sC.close();
+            System.out.println("Connection close...");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     *
+     */
+    public void upLoadToClient(){
+        try {
+            OutputStream outStream = sC.getOutputStream();
+            BufferedOutputStream outBuff = new BufferedOutputStream(outStream);
+            FileInputStream file = new FileInputStream("C:\\Users\\User\\Desktop\\ricezione.txt");
+
+            byte[] buffer = new byte[256];
+            int bytesRead;
+
+            while ((bytesRead = file.read(buffer)) != -1){
+                outBuff.write(buffer, 0, bytesRead);
+            }
+            outBuff.close();
+
+        } catch (IOException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean checkIsBound(){return sS.isBound();}
+
+    /**
+     *
+     * @return
+     */
+    public boolean checkIsClosed(){return sS.isClosed();}
 }
