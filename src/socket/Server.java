@@ -66,14 +66,19 @@ public class Server {
                         flagClose = false;
                         break;
                     case "close":
-                        System.out.println(command + "Server start shutdown...");
+                        System.out.println(command + ": Server start shutdown...");
                         sS.close();
                         flagClose = false;
                         System.out.println("Server stop listening for new connection...");
                         break;
                     case "send":
-                        System.out.println(command + "upload file...");
+                        System.out.println(command + ": upload file...");
                         upLoadToClient();
+                        break;
+                    case "get":
+                        System.out.println(command + ": download file from " + sC.getRemoteSocketAddress());
+                        downloadFromClient();
+                        break;
                     default:
                         System.out.println(command + ": Comm not found");
                 }
@@ -92,7 +97,7 @@ public class Server {
         try {
             OutputStream outStream = sC.getOutputStream();
             BufferedOutputStream outBuff = new BufferedOutputStream(outStream);
-            FileInputStream file = new FileInputStream("C:\\Users\\User\\Desktop\\ricezione.txt");
+            FileInputStream file = new FileInputStream("C:\\Users\\User\\Desktop\\invio.txt");
 
             byte[] buffer = new byte[256];
             int bytesRead;
@@ -103,6 +108,27 @@ public class Server {
             System.out.println("Upload complete!");
             outBuff.close();
 
+        } catch (IOException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     *
+     */
+    public void downloadFromClient(){
+        try {
+            InputStream inStream = sC.getInputStream();
+            BufferedInputStream inBuff = new BufferedInputStream(inStream);
+            FileOutputStream file = new FileOutputStream("C:\\Users\\User\\Desktop\\ricezione.txt");
+
+            byte[] buffer = new byte[256];
+            int bytesWrite;
+
+            while ((bytesWrite = inBuff.read(buffer)) != -1){
+                file.write(buffer, 0, bytesWrite);
+            }
+            System.out.println("Download complete!");
         } catch (IOException e){
             throw new RuntimeException(e);
         }
