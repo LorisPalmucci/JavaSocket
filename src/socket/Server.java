@@ -62,17 +62,18 @@ public class Server {
                 command = buf.readLine();
                 switch (command){
                     case "quit":
-                        System.out.println(command + ": Send 'close' from client...");
+                        System.out.println(command + ": from " + sC.getRemoteSocketAddress());
                         flagClose = false;
                         break;
                     case "close":
-                        System.out.println(command + "Server start shutdown...");
+                        System.out.println(command + ": from " + sC.getRemoteSocketAddress()
+                                +"\nServer start shutdown...");
                         sS.close();
                         flagClose = false;
                         System.out.println("Server stop listening for new connection...");
                         break;
                     case "send":
-                        System.out.println(command + "upload file...");
+                        System.out.println(command + "upload file to " + sC.getRemoteSocketAddress());
                         upLoadToClient();
                     default:
                         System.out.println(command + ": Comm not found");
