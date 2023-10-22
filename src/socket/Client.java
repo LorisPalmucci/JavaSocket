@@ -37,11 +37,31 @@ public class Client {
 
     public void commandLine(){
         try {
+            BufferedReader buffer = new BufferedReader(new InputStreamReader(System.in));
+            String in ="";
+            while (!(in.equals("quit"))) {
+                in = buffer.readLine();
+                switch (in){
+                    case "close":
+                        commandList(in);
+                        break;
+                    default:
+                        System.out.println("Command not found");
+                        break;
+                }
+            }
+        } catch (IOException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void commandList(String command){
+        try {
             OutputStream outStream = socketClient.getOutputStream();
             BufferedWriter b = new BufferedWriter(new OutputStreamWriter(outStream));
             b.write("close");
             b.close();
-        } catch (IOException e){
+        }catch (IOException e){
             throw new RuntimeException(e);
         }
     }
