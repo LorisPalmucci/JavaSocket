@@ -71,6 +71,9 @@ public class Server {
                         flagClose = false;
                         System.out.println("Server stop listening for new connection...");
                         break;
+                    case "send":
+                        System.out.println(command + "upload file...");
+                        upLoadToClient();
                     default:
                         System.out.println(command + ": Comm not found");
                 }
@@ -97,6 +100,7 @@ public class Server {
             while ((bytesRead = file.read(buffer)) != -1){
                 outBuff.write(buffer, 0, bytesRead);
             }
+            System.out.println("Upload complete!");
             outBuff.close();
 
         } catch (IOException e){
