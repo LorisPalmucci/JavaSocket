@@ -35,11 +35,11 @@ public class Server {
                         "\nType 'quit' to close connection..." +
                         "\nWaiting for data...");
                 commandLine();
+
             }
+            System.out.println("Server is closed!");
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            System.out.println("Server is closed!");
         }
     }
 
@@ -53,13 +53,14 @@ public class Server {
      *          caratteri che verranno bufferizzati.
      */
     private void commandLine(){
-        String command;
         try {
             InputStream in = sC.getInputStream();
             BufferedReader buf = new BufferedReader(new InputStreamReader(in));
             boolean flagClose = true;
+            String command;
             while (flagClose){
                 command = buf.readLine();
+                if(command != null)
                 switch (command){
                     case "quit":
                         System.out.println(command + ": from " + sC.getRemoteSocketAddress());
@@ -76,12 +77,9 @@ public class Server {
                         System.out.println(command + "upload file to " + sC.getRemoteSocketAddress());
                         upLoadToClient();
                         break;
-                    case "get":
-                        System.out.println(command + ": download file from " + sC.getRemoteSocketAddress());
-                        downloadFromClient();
-                        break;
                     default:
                         System.out.println(command + ": Comm not found");
+                        break;
                 }
             }
             sC.close();

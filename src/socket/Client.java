@@ -24,9 +24,10 @@ public class Client {
             this.socketClient = new Socket();
             System.out.println("Channel created..." + "\n" +
                     "Try to connect...");
-                socketClient.connect(new InetSocketAddress(HOST, PORT));
+            this.socketClient.connect(new InetSocketAddress(HOST, PORT));
             System.out.println("Connected to: ");
             commandLine();
+            this.socketClient.close();
             System.out.println("Connection closed...");
 
 
@@ -37,14 +38,29 @@ public class Client {
 
     public void commandLine(){
         try {
-            OutputStream outStream = socketClient.getOutputStream();
-            BufferedWriter b = new BufferedWriter(new OutputStreamWriter(outStream));
-            b.write("close");
-            b.close();
+            BufferedReader buffer = new BufferedReader(new InputStreamReader(System.in));
+            String in ="";
+            while (!(in.equals("quit"))) {
+                in = buffer.readLine();
+                sendCommand(in);
+            }
         } catch (IOException e){
             throw new RuntimeException(e);
         }
     }
+    private void sendCommand(String command){
+        try {
+            OutputStream outStream = socketClient.getOutputStream();
+            BufferedWriter b = new BufferedWriter(new OutputStreamWriter(outStream));
+            b.write(command);
+            b.newLine();
+            b.flush();
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+
 
     public static void main(String[] args) {
         Client c = new Client();
