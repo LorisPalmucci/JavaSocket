@@ -73,9 +73,13 @@ public class Server {
                         flagClose = false;
                         System.out.println("Server stop listening for new connection...");
                         break;
-                    case "send":
+                    case "get":
                         System.out.println(command + "upload file to " + sC.getRemoteSocketAddress());
                         upLoadToClient();
+                        break;
+                    case "put":
+                        System.out.println(command + "receive file from " + sC.getRemoteSocketAddress());
+                        downloadFromClient();
                         break;
                     default:
                         System.out.println(command + ": Comm not found");
