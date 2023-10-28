@@ -15,9 +15,7 @@ public class Server {
     /**
      * Avvia una socket, prendendo come parametro iniziale la porta dove verrà associata
      */
-    public Server(){
-        runServer();
-    }
+    public Server(){runServer();}
 
     /**
      *
@@ -58,9 +56,9 @@ public class Server {
             BufferedReader buf = new BufferedReader(new InputStreamReader(in));
             boolean flagClose = true;
             String command;
-            while (flagClose){
+            while (flagClose && !sC.isClosed()){
                 command = buf.readLine();
-                if(command != null)
+                if((command != null))
                 switch (command){
                     case "quit":
                         System.out.println(command + ": from " + sC.getRemoteSocketAddress());
@@ -69,24 +67,24 @@ public class Server {
                     case "close":
                         System.out.println(command + ": from " + sC.getRemoteSocketAddress()
                                 +"\nServer start shutdown...");
-                        sS.close();
                         flagClose = false;
                         System.out.println("Server stop listening for new connection...");
                         break;
                     case "get":
-                        System.out.println(command + "upload file to " + sC.getRemoteSocketAddress());
+                        System.out.println(command + ": upload file to " + sC.getRemoteSocketAddress());
                         upLoadToClient();
                         break;
                     case "put":
-                        System.out.println(command + "receive file from " + sC.getRemoteSocketAddress());
+                        System.out.println(command + ": receive file from " + sC.getRemoteSocketAddress());
                         downloadFromClient();
                         break;
                     default:
                         System.out.println(command + ": Comm not found");
                         break;
                 }
+                if (!sC.isClosed())
+                    sC.close();
             }
-            sC.close();
             System.out.println("Connection with client is close...");
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -96,25 +94,31 @@ public class Server {
     /**
      *
      */
-    public void upLoadToClient(){
+    public void upLoadToClient() {
         try {
-            OutputStream outStream = sC.getOutputStream();
-            BufferedOutputStream outBuff = new BufferedOutputStream(outStream);
-            FileInputStream file = new FileInputStream("C:\\Users\\User\\Desktop\\invio.txt");
+            if (!sC.isClosed()) {
+                try (OutputStream outStream = sC.getOutputStream();
+                     BufferedOutputStream outBuff = new BufferedOutputStream(outStream);
+                     FileInputStream file = new FileInputStream("C:\\Users\\User\\Desktop\\linux.txt")) {
 
-            byte[] buffer = new byte[256];
-            int bytesRead;
+                    byte[] buffer = new byte[256];
+                    int bytesRead;
 
-            while ((bytesRead = file.read(buffer)) != -1){
-                outBuff.write(buffer, 0, bytesRead);
+                    while ((bytesRead = file.read(buffer)) != -1) {
+                        outBuff.write(buffer, 0, bytesRead);
+                    }
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                System.out.println("Socket is closed. Cannot write to it.");
             }
+        } finally {
             System.out.println("Upload complete!");
-            outBuff.close();
-
-        } catch (IOException e){
-            throw new RuntimeException(e);
         }
     }
+
 
     /**
      *
@@ -123,7 +127,7 @@ public class Server {
         try {
             InputStream inStream = sC.getInputStream();
             BufferedInputStream inBuff = new BufferedInputStream(inStream);
-            FileOutputStream file = new FileOutputStream("C:\\Users\\User\\Desktop\\ricezione.txt");
+            FileOutputStream file = new FileOutputStream("C:\\Users\\User\\Desktop\\linux.txt");
 
             byte[] buffer = new byte[256];
             int bytesWrite;
