@@ -124,6 +124,7 @@ public class Client {
 
             while ((bytesWrite = inBuff.read(buffer)) != -1){
                 file.write(buffer, 0, bytesWrite);
+                System.out.println("= \r");
             }
             file.close();
             System.out.println("download complete!");
