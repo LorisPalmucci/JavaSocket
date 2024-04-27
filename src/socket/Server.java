@@ -6,10 +6,13 @@ import java.net.Socket;
 
 public class Server {
 
+    //variabile per la socket del server
     private ServerSocket sS;
 
+    //varibile per la socket del client
     private Socket sC;
 
+    //porta su cui il server sarà in ascolto
     private static int PORT = 50007;
 
     /**
@@ -18,7 +21,12 @@ public class Server {
     public Server(){runServer();}
 
     /**
+     * Avvia il server. Viene creata una nuova socket server e associata ad una porta. Fincé la socket non viene chiusa
+     * rimane in ascolto sulla porta in attesa di una connessione da parte di un client.
      *
+     * Quando arriva una connessione, viene accettata e quindi creata la connessione Server/Client.
+     * Il client rimane in attesa di un input da parte dell'utente e la connessione viene chiusa quando termina il
+     * suo compito.
      */
     public void runServer(){
         try {
@@ -77,7 +85,6 @@ public class Server {
                         case "get":
                             System.out.println(comm + ": upload file to " + sC.getRemoteSocketAddress());
                             upLoadToClient(argument);
-
                             break;
                         case "put":
                             System.out.println(comm + ": receive file from " + sC.getRemoteSocketAddress());
@@ -97,7 +104,18 @@ public class Server {
     }
 
     /**
+     * Funzione che carica un file dal Server al Client.
      *
+     * outBuff:
+     *      Viene creato un buffer di output che permette di di scrivere byte nel flusso di stream senza dover necessariamente
+     *      fare una chiamata di sistema per ogni byte scritto dall'applicazione.
+     *
+     * outStream:
+     *      Al buffer viene associato un nuovo stream di out.
+     *
+     * file:
+     *      questa variabile contiene i byte letti da un file che verrano poi passati al buffer per essere inviati
+     *      al flusso di out
      */
     public void upLoadToClient(String a) {
         if (!sC.isClosed()) {
@@ -121,7 +139,16 @@ public class Server {
 
 
     /**
+     * Funzione che carica un file dal Server al Client.
      *
+     * inStream:
+     *      Viene creato un buffer di input che permette di ricevere byte dal flusso di stream.
+     *
+     * inBuff:
+     *      Al buffer viene associato un nuovo stream di in.
+     *
+     * file:
+     *      questa variabile contiene i byte letti dal buffer che verrano poi memorizzati in un nuovo file
      */
     public void downloadFromClient(){
         if(!sC.isClosed()) {
