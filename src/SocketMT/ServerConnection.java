@@ -45,8 +45,4 @@ public class ServerConnection implements Runnable {
             throw new RuntimeException(e);
         }
     }
-
-    public boolean isBound(){;
-        return sS.isBound();
-    }
 }
