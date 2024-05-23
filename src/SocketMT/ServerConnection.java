@@ -10,9 +10,6 @@ public class ServerConnection implements Runnable {
     //variabile per la socket del server
     private ServerSocket sS;
 
-    //varibile per la socket del client
-    private Socket sC;
-
     //porta su cui il server sarà in ascolto
     private static int PORT;
 
@@ -24,10 +21,6 @@ public class ServerConnection implements Runnable {
      * Il client rimane in attesa di un input da parte dell'utente e la connessione viene chiusa quando termina il
      * suo compito.
      */
-
-    public void setPort(int p){
-        this.PORT = p;
-    }
     @Override
     public void run() {
         try {
@@ -38,11 +31,21 @@ public class ServerConnection implements Runnable {
             System.out.println("Started..."+ sS);
             while(!sS.isClosed()){
                 System.out.println("Server is listening on port: " + sS.getLocalPort());
-                this.sC = sS.accept();
+                //varibile per la socket del client
+                Socket sC = sS.accept();
             }
             System.out.println("Server is closed!");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Setter che serve ad impostare la porta per la socket specifica
+     *
+     * @param p
+     */
+    public void setPort(int p){
+        this.PORT = p;
     }
 }
