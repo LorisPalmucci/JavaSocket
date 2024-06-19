@@ -29,10 +29,13 @@ public class ServerConnection implements Runnable {
             sS = new ServerSocket();
             sS.bind(new InetSocketAddress(IP, PORT));
             System.out.println("Started..."+ sS);
+            System.out.println("Server is listening on port: " + sS.getLocalPort());
             while(!sS.isClosed()){
-                System.out.println("Server is listening on port: " + sS.getLocalPort());
                 //varibile per la socket del client
                 Socket sC = sS.accept();
+                System.out.println("Connect to: " + sC.getRemoteSocketAddress() +
+                        "\nType 'quit' to close connection..." +
+                        "\nWaiting for data...");
             }
             System.out.println("Server is closed!");
         } catch (IOException e) {
